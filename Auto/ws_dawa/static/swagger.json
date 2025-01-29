@@ -1,0 +1,119 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Documentación de Servicios Web de DAWA",
+    "version": "1.0.0",
+    "title": "Documentación de DAWA",
+    "termsOfService": "Leer wwww.ug.edu.com",
+    "contact": {
+      "email": "juan.cedenor@ug.edu.ec"
+    },
+    "license": {
+      "name": "Dawa UG",
+      "url": "none"
+    }
+  },
+  "tags": [
+    {
+      "name": "Vehicles",
+      "description": "Endpoints para gestionar vehículos"
+    }
+  ],
+  "paths": {
+    "/vehicles/": {
+      "get": {
+        "tags": ["Vehicles"],
+        "summary": "Obtener todos los vehículos",
+        "description": "Devuelve una lista de todos los vehículos. Requiere autenticación mediante token.",
+        "operationId": "getAllVehicles",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "tokenapp",
+            "in": "header",
+            "description": "Token de autenticación",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de vehículos",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Vehicle"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Token inválido o no proporcionado.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Error del servidor",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "tokenapp": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Vehicle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "marca": {
+          "type": "string"
+        },
+        "modelo": {
+          "type": "string"
+        },
+        "año": {
+          "type": "integer"
+        },
+        "placa": {
+          "type": "string"
+        },
+        "descripcion": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "default": false
+        },
+        "message": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32",
+          "example": 400
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "tokenapp": {
+      "type": "apiKey",
+      "name": "tokenapp",
+      "in": "header"
+    }
+  }
+}

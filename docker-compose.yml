@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  auto:
+    build: ./Auto
+    ports:
+      - "1009:1009"
+    environment:
+      DB_USER: dawau
+      DB_PASS: dawau
+      DB_HOST: postgres
+      DB_NAME: examen
+      DB_PORT: 5432
+      SECRET_JWT: JkDawa*+19**
+    depends_on:
+      - postgres
+    networks:
+      - dawa-network
+
+  dawa:
+    build: ./DAWA
+    ports:
+      - "1008:1008"
+    environment:
+      DB_USER: dawau
+      DB_PASS: dawau
+      DB_HOST: postgres
+      DB_NAME: examen
+      DB_PORT: 5432
+      SECRET_JWT: JkDawa*+19**
+    depends_on:
+      - postgres
+    networks:
+      - dawa-network
+
+  app:
+    build: ./app
+    ports:
+      - "3000:80"
+    depends_on:
+      - auto
+      - dawa
+    networks:
+      - dawa-network
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: dawau
+      POSTGRES_PASSWORD: dawau
+      POSTGRES_DB: examen
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - dawa-network
+
+volumes:
+  postgres-data:
+
+networks:
+  dawa-network:
+    driver: bridge
